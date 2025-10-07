@@ -1,0 +1,33 @@
+{
+  "name": "Focal Length Thermal Variation",
+  "description": "Focal length variations due to thermal expansion over -20\u00b0C to 60\u00b0C",
+  "parameters": [
+    {
+      "name": "focal_length",
+      "nominal_value": 25.0,
+      "distribution": "normal",
+      "parameters": {
+        "mean": 25.0,
+        "std": 0.16666666666666666
+      },
+      "units": "mm",
+      "description": "Focal length with thermal variation (\u00b10.5mm, 3\u03c3)"
+    }
+  ],
+  "metadata": {
+    "nominal_focal_length_mm": 25.0,
+    "thermal_variation_mm": 0.5,
+    "temperature_range_C": [
+      -20,
+      60
+    ],
+    "assumed_mechanism": "thermal_expansion",
+    "name": "Nominal Space Environment",
+    "description": "Typical space thermal cycling (\u00b140\u00b0C)",
+    "temp_range": [
+      -20,
+      60
+    ],
+    "focal_length_variation": 0.5
+  }
+}

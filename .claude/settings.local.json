@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep:*)",
+      "Bash(PYTHONPATH=. python test_perturbation_analysis.py)",
+      "Bash(PYTHONPATH=. python tools/specialized/test_perturbation_analysis.py)",
+      "Bash(PYTHONPATH=. python tools/specialized/focal_length_perturbation_analysis.py)",
+      "Bash(PYTHONPATH=. python tools/specialized/focal_length_demo_simplified.py)",
+      "Bash(PYTHONPATH=. python tools/specialized/focal_length_uncertainty_focused.py)",
+      "Bash(mkdir:*)"
+    ],
+    "deny": []
+  }
+}
