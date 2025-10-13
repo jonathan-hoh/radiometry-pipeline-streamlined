@@ -7,7 +7,8 @@
       "Bash(PYTHONPATH=. python tools/specialized/focal_length_perturbation_analysis.py)",
       "Bash(PYTHONPATH=. python tools/specialized/focal_length_demo_simplified.py)",
       "Bash(PYTHONPATH=. python tools/specialized/focal_length_uncertainty_focused.py)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(PYTHONPATH=. python:*)"
     ],
     "deny": []
   }

@@ -1,0 +1,51 @@
+# Validation Framework Configuration
+# Star Tracker Radiometry Pipeline
+
+monte_carlo:
+  n_samples: 1000
+  random_seed: 42
+  parallel_workers: 8
+  checkpoint_interval: 100  # Save progress every N samples
+  
+camera:
+  fov_deg: 20.0
+  pixel_scale_arcsec: 15.0
+  image_size: [1024, 1024]
+  focal_length_mm: 40.07
+  
+sensor:
+  model: "CMV4000"
+  pixel_pitch_um: 5.5
+  array_size: [2048, 2048] 
+  full_well_electrons: 13500
+  read_noise_electrons: 13.0
+  quantum_efficiency: 0.6
+  
+psf_config:
+  generations: ["Gen_1", "Gen_2"]  # PSF generations to test
+  field_angles: [0, 1, 2, 4, 5, 7, 8, 9, 11, 12, 14]  # degrees
+  magnitude_range: [2.0, 6.0]
+  
+validation_thresholds:
+  attitude_error_arcsec: 1.0      # Maximum acceptable attitude error
+  identification_rate_min: 0.95   # Minimum star identification rate
+  astrometric_rms_pixels: 0.1     # Maximum astrometric RMS error
+  centroiding_accuracy_pixels: 0.25  # Maximum centroiding error
+  snr_threshold: 5.0              # Minimum SNR for detection
+  
+output:
+  results_dir: "validation/results"
+  plots_format: "png"  # png, pdf, svg
+  plots_dpi: 300
+  save_intermediate: true
+  compression: "gzip"  # For HDF5 files
+  
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "validation/validation.log"
+  
+performance:
+  max_runtime_minutes: 30  # Maximum runtime for full validation
+  memory_limit_gb: 8       # Memory usage warning threshold
+  progress_reporting: true # Show progress bars
