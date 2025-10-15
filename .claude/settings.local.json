@@ -8,7 +8,26 @@
       "Bash(PYTHONPATH=. python tools/specialized/focal_length_demo_simplified.py)",
       "Bash(PYTHONPATH=. python tools/specialized/focal_length_uncertainty_focused.py)",
       "Bash(mkdir:*)",
-      "Bash(PYTHONPATH=. python:*)"
+      "Bash(PYTHONPATH=. python:*)",
+      "Bash(python:*)",
+      "Bash(pip3 install:*)",
+      "Bash(source:*)",
+      "Bash(pip install:*)",
+      "Bash(venv/bin/pip install PyQt6 matplotlib numpy)",
+      "Bash(apt list:*)",
+      "Bash(sudo apt:*)",
+      "Bash(sudo apt install:*)",
+      "Bash(pipx:*)",
+      "Bash(rm:*)",
+      "Bash(venv/bin/python:*)",
+      "Bash(PYTHONPATH=. venv/bin/python run_gui.py)",
+      "Bash(rg:*)",
+      "Bash(cp:*)",
+      "Bash(sed:*)",
+      "Bash(PYTHONPATH=.. venv/bin/python -c \"\nimport sys\nsys.path.insert(0, ''..'')\nfrom GUI.main_window import MainWindow\nfrom GUI.widgets.progress_panel import ProgressPanel  \nfrom GUI.utils.simulation_worker import SimulationWorker\nprint(''✅ All Phase 2 imports successful'')\n\")",
+      "Bash(PYTHONPATH=. ../venv/bin/python -c \"\nfrom GUI.widgets.progress_panel import ProgressPanel  \nfrom GUI.utils.simulation_worker import SimulationWorker\nprint(''✅ Phase 2 components import successfully'')\n\")",
+      "Bash(PYTHONPATH=. /mnt/c/Users/Dr. J/OneDrive/SOE/SaaS Physics/Star Track/radiometry-pipeline-streamlined/venv/bin/python -c \"\nfrom GUI.widgets.progress_panel import ProgressPanel  \nfrom GUI.utils.simulation_worker import SimulationWorker\nprint(''✅ Phase 2 components import successfully'')\n\")",
+      "Bash(PYTHONPATH=. /mnt/c/Users/Dr. J/OneDrive/SOE/SaaS Physics/Star Track/radiometry-pipeline-streamlined/venv/bin/python run_gui.py)"
     ],
     "deny": []
   }
