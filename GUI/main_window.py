@@ -65,19 +65,31 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout(central_widget)
         layout.setContentsMargins(20, 20, 20, 20)
         
-        # Create splitter for config form and progress panel
+        # Create splitter for config and progress panel
         splitter = QSplitter(Qt.Orientation.Horizontal)
         
-        # Configuration form (left side)
-        self.config_form = ConfigForm()
-        splitter.addWidget(self.config_form)
+        # Configuration section (left side) - Choose between simple and tabbed interface
+        self.use_tabbed_interface = True  # Toggle for interface mode
+        
+        if self.use_tabbed_interface:
+            # Import tabbed interface
+            from .widgets.tabbed_config import TabbedConfigWidget
+            self.config_widget = TabbedConfigWidget()
+        else:
+            # Use simple config form (Phase 1/2)
+            self.config_widget = ConfigForm()
+        
+        splitter.addWidget(self.config_widget)
         
         # Progress panel (right side)
         self.progress_panel = ProgressPanel()
         splitter.addWidget(self.progress_panel)
         
-        # Set splitter proportions (60% config, 40% progress)
-        splitter.setSizes([480, 320])
+        # Set splitter proportions (65% config, 35% progress for tabbed interface)
+        if self.use_tabbed_interface:
+            splitter.setSizes([520, 280])
+        else:
+            splitter.setSizes([480, 320])
         
         layout.addWidget(splitter)
         
@@ -129,7 +141,12 @@ class MainWindow(QMainWindow):
         
     def setup_connections(self):
         """Setup signal connections."""
-        self.config_form.run_simulation_requested.connect(self.run_simulation)
+        # Connect based on interface type
+        if self.use_tabbed_interface:
+            self.config_widget.run_simulation_requested.connect(self.run_simulation_tabbed)
+        else:
+            self.config_widget.run_simulation_requested.connect(self.run_simulation)
+        
         self.progress_panel.cancel_requested.connect(self.cancel_simulation)
         
     def check_dependencies(self):
@@ -209,7 +226,7 @@ class MainWindow(QMainWindow):
             self.simulation_worker.simulation_failed.connect(self.on_simulation_failed)
             
             # Update UI state
-            self.config_form.set_simulation_running(True)
+            self._set_simulation_running(True)
             self.progress_panel.start_simulation()
             self.status_bar.showMessage("Running simulation in background...")
             
@@ -231,7 +248,7 @@ class MainWindow(QMainWindow):
             )
             
             # Reset UI state
-            self.config_form.set_simulation_running(False)
+            self._set_simulation_running(False)
             
 
     def cancel_simulation(self):
@@ -254,7 +271,7 @@ class MainWindow(QMainWindow):
                 else:
                     logger.warning("Simulation thread did not respond to cancellation")
                     self.status_bar.showMessage("⚠️ Simulation thread unresponsive")
-                self.config_form.set_simulation_running(False)
+                self._set_simulation_running(False)
 
     def on_simulation_finished(self, results):
         """Handle successful simulation completion."""
@@ -263,22 +280,51 @@ class MainWindow(QMainWindow):
         if isinstance(results, dict):
             results["execution_time"] = getattr(self.pipeline, "execution_time", 0.0)
             results["configuration"] = self.simulation_worker.config if self.simulation_worker else {}
-        self.config_form.update_results(results)
+        self._update_results(results)
         self.status_bar.showMessage("✅ Simulation completed successfully")
-        self.config_form.set_simulation_running(False)
+        self._set_simulation_running(False)
 
     def on_simulation_failed(self, error_message):
         """Handle simulation failure."""
         logger.error(f"Simulation failed: {error_message}")
         self.progress_panel.simulation_finished(success=False, message=error_message)
-        self.config_form.update_results({"error": error_message})
+        self._update_results({"error": error_message})
         self.status_bar.showMessage(f"❌ Simulation failed: {error_message}")
         QMessageBox.critical(
             self, "Simulation Error",
             f"The simulation failed with the following error:\n\n{error_message}\n\n"
             "Please check the configuration and try again."
         )
-        self.config_form.set_simulation_running(False)
+        self._set_simulation_running(False)
+        
+    def run_simulation_tabbed(self, config):
+        """Run simulation with tabbed configuration (Phase 3)."""
+        # Extract simple config from tabbed config for compatibility with existing simulation
+        simple_config = config['combined']
+        logger.info(f"Starting simulation with tabbed config: {simple_config}")
+        self.run_simulation(simple_config)
+        
+    def _set_simulation_running(self, running):
+        """Set simulation running state for both interface types."""
+        if self.use_tabbed_interface:
+            # For tabbed interface, we'll manage state through the widget itself
+            # The run button is managed by the validation system
+            pass
+        else:
+            # For simple interface, use the original method
+            self.config_widget.set_simulation_running(running)
+            
+    def _update_results(self, results):
+        """Update results display for both interface types."""
+        if self.use_tabbed_interface:
+            # For tabbed interface, we could add a results display
+            # For now, just log the results
+            logger.info(f"Simulation results: {results}")
+            # TODO: Add results display to tabbed interface
+        else:
+            # For simple interface, use the original method
+            self.config_widget.update_results(results)
+        
     def show_about(self):
         """Show about dialog."""
         QMessageBox.about(
@@ -297,7 +343,15 @@ class MainWindow(QMainWindow):
     def closeEvent(self, event):
         """Handle application close event."""
         # Check if simulation is running
-        if not self.config_form.run_button.isEnabled():
+        is_simulation_running = False
+        if self.use_tabbed_interface:
+            # Check if worker thread is running
+            is_simulation_running = (self.simulation_worker and self.simulation_worker.isRunning())
+        else:
+            # Check run button state for simple interface
+            is_simulation_running = not self.config_widget.run_button.isEnabled()
+            
+        if is_simulation_running:
             reply = QMessageBox.question(
                 self,
                 "Simulation Running",
