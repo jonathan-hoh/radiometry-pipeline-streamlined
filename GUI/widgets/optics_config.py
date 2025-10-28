@@ -51,12 +51,13 @@ class OpticsConfigWidget(QWidget):
         title_font.setBold(True)
         title_label.setFont(title_font)
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        title_label.setStyleSheet("color: #000000;")
         layout.addWidget(title_label)
         
         # Description
         desc_label = QLabel("Configure the optical system characteristics of your star tracker.")
         desc_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        desc_label.setStyleSheet("color: #666; margin-bottom: 10px;")
+        desc_label.setStyleSheet("color: #666666; margin-bottom: 10px; background-color: transparent;")
         layout.addWidget(desc_label)
         
         # Optics parameters group
@@ -71,6 +72,7 @@ class OpticsConfigWidget(QWidget):
         self.focal_length_input.setSuffix(" mm")
         self.focal_length_input.setDecimals(1)
         self.focal_length_input.setMinimumWidth(100)
+        self.focal_length_input.setButtonSymbols(QDoubleSpinBox.ButtonSymbols.UpDownArrows)
         
         self.focal_length_slider = QSlider(Qt.Orientation.Horizontal)
         self.focal_length_slider.setRange(100, 1000)  # 10.0-100.0 * 10
@@ -117,7 +119,8 @@ class OpticsConfigWidget(QWidget):
                 font-family: monospace;
                 font-size: 12px;
                 background-color: #f0f0f0;
-                border: 1px solid #ccc;
+                color: #000000;
+                border: 1px solid #cccccc;
                 border-radius: 3px;
                 padding: 5px;
                 min-width: 120px;
@@ -166,7 +169,8 @@ class OpticsConfigWidget(QWidget):
             QLabel {
                 font-family: monospace;
                 font-size: 11px;
-                color: #333;
+                color: #333333;
+                background-color: transparent;
             }
         """)
         perf_layout.addRow("Angular Resolution:", self.angular_resolution_display)
@@ -177,7 +181,8 @@ class OpticsConfigWidget(QWidget):
             QLabel {
                 font-family: monospace;
                 font-size: 11px;
-                color: #333;
+                color: #333333;
+                background-color: transparent;
             }
         """)
         perf_layout.addRow("Relative Light Gathering:", self.light_gathering_display)
@@ -200,9 +205,10 @@ class OpticsConfigWidget(QWidget):
         btn.setMaximumSize(25, 25)
         btn.setStyleSheet("""
             QToolButton {
-                border: 1px solid #ccc;
+                border: 1px solid #cccccc;
                 border-radius: 12px;
                 background-color: #f0f0f0;
+                color: #000000;
                 font-size: 12px;
             }
             QToolButton:hover {
@@ -215,7 +221,7 @@ class OpticsConfigWidget(QWidget):
         """Create a validation indicator label."""
         indicator = QLabel("✓")
         indicator.setObjectName(f"validation_{field_name}")
-        indicator.setStyleSheet("color: green; font-weight: bold; font-size: 16px;")
+        indicator.setStyleSheet("color: green; font-weight: bold; font-size: 16px; background-color: transparent;")
         indicator.setMinimumSize(20, 20)
         indicator.setAlignment(Qt.AlignmentFlag.AlignCenter)
         return indicator
@@ -291,19 +297,19 @@ class OpticsConfigWidget(QWidget):
             if indicator:
                 if valid:
                     indicator.setText("✓")
-                    indicator.setStyleSheet("color: green; font-weight: bold; font-size: 16px;")
+                    indicator.setStyleSheet("color: green; font-weight: bold; font-size: 16px; background-color: transparent;")
                 else:
                     indicator.setText("✗")
-                    indicator.setStyleSheet("color: red; font-weight: bold; font-size: 16px;")
+                    indicator.setStyleSheet("color: red; font-weight: bold; font-size: 16px; background-color: transparent;")
                     is_valid = False
         
         # Update validation summary
         if is_valid:
             self.validation_summary.setText("✅ Optics configuration is valid")
-            self.validation_summary.setStyleSheet("color: green; font-weight: bold; padding: 10px;")
+            self.validation_summary.setStyleSheet("color: green; font-weight: bold; padding: 10px; background-color: transparent;")
         else:
             self.validation_summary.setText("⚠️ Please check highlighted fields")
-            self.validation_summary.setStyleSheet("color: orange; font-weight: bold; padding: 10px;")
+            self.validation_summary.setStyleSheet("color: orange; font-weight: bold; padding: 10px; background-color: transparent;")
             
         self.validation_changed.emit(is_valid)
         

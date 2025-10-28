@@ -102,6 +102,14 @@ class MainWindow(QMainWindow):
         self.setStyleSheet("""
             QMainWindow {
                 background-color: #ffffff;
+                color: #000000;
+            }
+            QWidget {
+                color: #000000;
+                background-color: #ffffff;
+            }
+            QLabel {
+                color: #000000;
             }
             QGroupBox {
                 font-weight: bold;
@@ -109,12 +117,25 @@ class MainWindow(QMainWindow):
                 border-radius: 5px;
                 margin-top: 1ex;
                 padding-top: 10px;
+                background-color: #ffffff;
+                color: #000000;
             }
             QGroupBox::title {
                 subcontrol-origin: margin;
                 subcontrol-position: top center;
                 padding: 0 5px;
                 background-color: #ffffff;
+                color: #000000;
+            }
+            QSpinBox, QDoubleSpinBox, QComboBox {
+                background-color: #ffffff;
+                color: #000000;
+                border: 1px solid #cccccc;
+                border-radius: 3px;
+                padding: 2px;
+            }
+            QRadioButton {
+                color: #000000;
             }
         """)
         
@@ -204,17 +225,10 @@ class MainWindow(QMainWindow):
                 )
                 return
                 
-            # Initialize pipeline
-            psf_file = "data/PSF_sims/Gen_1/0_deg.txt"  # Default PSF file
-            
-            if not Path(psf_file).exists():
-                raise FileNotFoundError(f"PSF file not found: {psf_file}")
-                
-            self.pipeline = StarTrackerPipeline(
-                psf_file=psf_file,
-                magnitude=config['magnitude'],
-                num_simulations=config['num_trials']
-            )
+            # Initialize pipeline with default parameters
+            # The pipeline doesn't take psf_file, magnitude, or num_trials in __init__
+            # These are passed to processing methods instead
+            self.pipeline = StarTrackerPipeline(debug=False)
             
             # Create worker thread
             self.simulation_worker = SimulationWorker(self.pipeline, config)
@@ -301,7 +315,14 @@ class MainWindow(QMainWindow):
         """Run simulation with tabbed configuration (Phase 3)."""
         # Extract simple config from tabbed config for compatibility with existing simulation
         simple_config = config['combined']
-        logger.info(f"Starting simulation with tabbed config: {simple_config}")
+        
+        # Enable multi-star catalog simulation for testing
+        # This uses the baseline synthetic catalog with 5 stars
+        simple_config['use_catalog'] = True
+        simple_config['catalog_file'] = 'data/catalogs/baseline_5_stars_spread.csv'
+        simple_config['use_random_attitude'] = False  # Use identity attitude for now
+        
+        logger.info(f"Starting multi-star catalog simulation with config: {simple_config}")
         self.run_simulation(simple_config)
         
     def _set_simulation_running(self, running):
@@ -317,13 +338,47 @@ class MainWindow(QMainWindow):
     def _update_results(self, results):
         """Update results display for both interface types."""
         if self.use_tabbed_interface:
-            # For tabbed interface, we could add a results display
-            # For now, just log the results
-            logger.info(f"Simulation results: {results}")
-            # TODO: Add results display to tabbed interface
+            # For tabbed interface, open results window
+            self._open_results_window(results)
         else:
             # For simple interface, use the original method
             self.config_widget.update_results(results)
+            
+    def _open_results_window(self, results):
+        """Open a new results window with the simulation results."""
+        try:
+            # Import here to avoid circular imports
+            from .results_window import create_results_window
+            from datetime import datetime
+            
+            # Get configuration from the simulation worker if available
+            config = {}
+            if self.simulation_worker and hasattr(self.simulation_worker, 'config'):
+                config = self.simulation_worker.config
+            
+            # Generate job ID
+            job_id = f"Simulation_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+            
+            # Create results window
+            results_window = create_results_window(results, config, job_id, self)
+            
+            if results_window:
+                results_window.show()
+                logger.info(f"Opened results window: {job_id}")
+                
+                # Update status
+                self.status_bar.showMessage(f"✅ Results window opened: {job_id}")
+            else:
+                logger.error("Failed to create results window")
+                self.status_bar.showMessage("❌ Failed to open results window")
+                
+        except Exception as e:
+            logger.error(f"Error opening results window: {e}")
+            self.status_bar.showMessage(f"❌ Error opening results window: {str(e)}")
+            QMessageBox.critical(
+                self, "Results Window Error",
+                f"Failed to open results window:\n\n{str(e)}"
+            )
         
     def show_about(self):
         """Show about dialog."""

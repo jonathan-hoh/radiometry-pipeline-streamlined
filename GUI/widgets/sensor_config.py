@@ -51,12 +51,13 @@ class SensorConfigWidget(QWidget):
         title_font.setBold(True)
         title_label.setFont(title_font)
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        title_label.setStyleSheet("color: #000000;")
         layout.addWidget(title_label)
         
         # Description
         desc_label = QLabel("Configure the sensor characteristics of your star tracker.")
         desc_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        desc_label.setStyleSheet("color: #666; margin-bottom: 10px;")
+        desc_label.setStyleSheet("color: #666666; margin-bottom: 10px; background-color: transparent;")
         layout.addWidget(desc_label)
         
         # Sensor parameters group
@@ -71,6 +72,7 @@ class SensorConfigWidget(QWidget):
         self.pixel_pitch_input.setSuffix(" µm")
         self.pixel_pitch_input.setDecimals(1)
         self.pixel_pitch_input.setMinimumWidth(100)
+        self.pixel_pitch_input.setButtonSymbols(QDoubleSpinBox.ButtonSymbols.UpDownArrows)
         
         self.pixel_pitch_slider = QSlider(Qt.Orientation.Horizontal)
         self.pixel_pitch_slider.setRange(30, 100)  # 3.0-10.0 * 10
@@ -116,6 +118,7 @@ class SensorConfigWidget(QWidget):
         self.quantum_efficiency_input.setValue(60)
         self.quantum_efficiency_input.setSuffix("%")
         self.quantum_efficiency_input.setMinimumWidth(100)
+        self.quantum_efficiency_input.setButtonSymbols(QSpinBox.ButtonSymbols.UpDownArrows)
         
         self.qe_slider = QSlider(Qt.Orientation.Horizontal)
         self.qe_slider.setRange(0, 100)
@@ -143,6 +146,7 @@ class SensorConfigWidget(QWidget):
         self.read_noise_input.setSuffix(" e⁻")
         self.read_noise_input.setDecimals(1)
         self.read_noise_input.setMinimumWidth(100)
+        self.read_noise_input.setButtonSymbols(QDoubleSpinBox.ButtonSymbols.UpDownArrows)
         
         read_noise_info_btn = self._create_info_button(
             "Electronic noise introduced during readout. Lower values "
@@ -164,6 +168,7 @@ class SensorConfigWidget(QWidget):
         self.dark_current_input.setSuffix(" e⁻/s")
         self.dark_current_input.setDecimals(1)
         self.dark_current_input.setMinimumWidth(100)
+        self.dark_current_input.setButtonSymbols(QDoubleSpinBox.ButtonSymbols.UpDownArrows)
         
         dark_current_info_btn = self._create_info_button(
             "Thermally generated electrons per second. Lower values "
@@ -195,9 +200,10 @@ class SensorConfigWidget(QWidget):
         btn.setMaximumSize(25, 25)
         btn.setStyleSheet("""
             QToolButton {
-                border: 1px solid #ccc;
+                border: 1px solid #cccccc;
                 border-radius: 12px;
                 background-color: #f0f0f0;
+                color: #000000;
                 font-size: 12px;
             }
             QToolButton:hover {
@@ -210,7 +216,7 @@ class SensorConfigWidget(QWidget):
         """Create a validation indicator label."""
         indicator = QLabel("✓")
         indicator.setObjectName(f"validation_{field_name}")
-        indicator.setStyleSheet("color: green; font-weight: bold; font-size: 16px;")
+        indicator.setStyleSheet("color: green; font-weight: bold; font-size: 16px; background-color: transparent;")
         indicator.setMinimumSize(20, 20)
         indicator.setAlignment(Qt.AlignmentFlag.AlignCenter)
         return indicator
@@ -268,19 +274,19 @@ class SensorConfigWidget(QWidget):
             if indicator:
                 if valid:
                     indicator.setText("✓")
-                    indicator.setStyleSheet("color: green; font-weight: bold; font-size: 16px;")
+                    indicator.setStyleSheet("color: green; font-weight: bold; font-size: 16px; background-color: transparent;")
                 else:
                     indicator.setText("✗")
-                    indicator.setStyleSheet("color: red; font-weight: bold; font-size: 16px;")
+                    indicator.setStyleSheet("color: red; font-weight: bold; font-size: 16px; background-color: transparent;")
                     is_valid = False
         
         # Update validation summary
         if is_valid:
             self.validation_summary.setText("✅ Sensor configuration is valid")
-            self.validation_summary.setStyleSheet("color: green; font-weight: bold; padding: 10px;")
+            self.validation_summary.setStyleSheet("color: green; font-weight: bold; padding: 10px; background-color: transparent;")
         else:
             self.validation_summary.setText("⚠️ Please check highlighted fields")
-            self.validation_summary.setStyleSheet("color: orange; font-weight: bold; padding: 10px;")
+            self.validation_summary.setStyleSheet("color: orange; font-weight: bold; padding: 10px; background-color: transparent;")
             
         self.validation_changed.emit(is_valid)
         

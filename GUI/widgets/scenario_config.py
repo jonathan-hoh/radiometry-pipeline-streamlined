@@ -53,12 +53,13 @@ class ScenarioConfigWidget(QWidget):
         title_font.setBold(True)
         title_label.setFont(title_font)
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        title_label.setStyleSheet("color: #000000;")
         layout.addWidget(title_label)
         
         # Description
         desc_label = QLabel("Configure the simulation scenario and environment.")
         desc_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        desc_label.setStyleSheet("color: #666; margin-bottom: 10px;")
+        desc_label.setStyleSheet("color: #666666; margin-bottom: 10px; background-color: transparent;")
         layout.addWidget(desc_label)
         
         # Star catalog group
@@ -91,6 +92,7 @@ class ScenarioConfigWidget(QWidget):
         self.magnitude_limit_input.setValue(6.5)
         self.magnitude_limit_input.setDecimals(1)
         self.magnitude_limit_input.setMinimumWidth(100)
+        self.magnitude_limit_input.setButtonSymbols(QDoubleSpinBox.ButtonSymbols.UpDownArrows)
         
         self.magnitude_slider = QSlider(Qt.Orientation.Horizontal)
         self.magnitude_slider.setRange(0, 100)  # 0.0-10.0 * 10
@@ -145,6 +147,7 @@ class ScenarioConfigWidget(QWidget):
         # Environment selection
         env_layout = QVBoxLayout()
         env_label = QLabel("Operating Environment:")
+        env_label.setStyleSheet("color: #000000; background-color: transparent;")
         env_layout.addWidget(env_label)
         
         self.environment_group = QButtonGroup()
@@ -183,6 +186,7 @@ class ScenarioConfigWidget(QWidget):
         self.trials_input.setRange(100, 5000)
         self.trials_input.setValue(1000)
         self.trials_input.setMinimumWidth(100)
+        self.trials_input.setButtonSymbols(QSpinBox.ButtonSymbols.UpDownArrows)
         
         trials_info_btn = self._create_info_button(
             "Number of Monte Carlo trials to run. More trials give better "
@@ -224,9 +228,9 @@ class ScenarioConfigWidget(QWidget):
             QLabel {
                 font-family: monospace;
                 font-size: 12px;
-                color: #333;
+                color: #333333;
                 background-color: #f0f0f0;
-                border: 1px solid #ccc;
+                border: 1px solid #cccccc;
                 border-radius: 3px;
                 padding: 8px;
             }
@@ -251,9 +255,10 @@ class ScenarioConfigWidget(QWidget):
         btn.setMaximumSize(25, 25)
         btn.setStyleSheet("""
             QToolButton {
-                border: 1px solid #ccc;
+                border: 1px solid #cccccc;
                 border-radius: 12px;
                 background-color: #f0f0f0;
+                color: #000000;
                 font-size: 12px;
             }
             QToolButton:hover {
@@ -266,7 +271,7 @@ class ScenarioConfigWidget(QWidget):
         """Create a validation indicator label."""
         indicator = QLabel("✓")
         indicator.setObjectName(f"validation_{field_name}")
-        indicator.setStyleSheet("color: green; font-weight: bold; font-size: 16px;")
+        indicator.setStyleSheet("color: green; font-weight: bold; font-size: 16px; background-color: transparent;")
         indicator.setMinimumSize(20, 20)
         indicator.setAlignment(Qt.AlignmentFlag.AlignCenter)
         return indicator
@@ -374,19 +379,19 @@ class ScenarioConfigWidget(QWidget):
             if indicator:
                 if valid:
                     indicator.setText("✓")
-                    indicator.setStyleSheet("color: green; font-weight: bold; font-size: 16px;")
+                    indicator.setStyleSheet("color: green; font-weight: bold; font-size: 16px; background-color: transparent;")
                 else:
                     indicator.setText("✗")
-                    indicator.setStyleSheet("color: red; font-weight: bold; font-size: 16px;")
+                    indicator.setStyleSheet("color: red; font-weight: bold; font-size: 16px; background-color: transparent;")
                     is_valid = False
         
         # Update validation summary
         if is_valid:
             self.validation_summary.setText("✅ Scenario configuration is valid")
-            self.validation_summary.setStyleSheet("color: green; font-weight: bold; padding: 10px;")
+            self.validation_summary.setStyleSheet("color: green; font-weight: bold; padding: 10px; background-color: transparent;")
         else:
             self.validation_summary.setText("⚠️ Please check highlighted fields")
-            self.validation_summary.setStyleSheet("color: orange; font-weight: bold; padding: 10px;")
+            self.validation_summary.setStyleSheet("color: orange; font-weight: bold; padding: 10px; background-color: transparent;")
             
         self.validation_changed.emit(is_valid)
         

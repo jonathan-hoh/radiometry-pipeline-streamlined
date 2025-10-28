@@ -48,7 +48,7 @@ def check_dependencies():
 
 def main():
     """Main application launcher."""
-    print("🚀 Starting Star Tracker GUI...")
+    print("Starting Star Tracker GUI...")
     
     # Check dependencies
     if not check_dependencies():

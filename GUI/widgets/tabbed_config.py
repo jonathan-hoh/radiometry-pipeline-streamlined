@@ -54,7 +54,7 @@ class TabbedConfigWidget(QWidget):
         title_font.setBold(True)
         title_label.setFont(title_font)
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title_label.setStyleSheet("color: #2196F3; margin-bottom: 10px;")
+        title_label.setStyleSheet("color: #2196F3; margin-bottom: 10px; background-color: transparent;")
         layout.addWidget(title_label)
         
         # Tab widget
@@ -70,6 +70,7 @@ class TabbedConfigWidget(QWidget):
             }
             QTabBar::tab {
                 background-color: #f0f0f0;
+                color: #000000;
                 border: 1px solid #cccccc;
                 border-bottom: none;
                 border-top-left-radius: 4px;
@@ -80,11 +81,13 @@ class TabbedConfigWidget(QWidget):
             }
             QTabBar::tab:selected {
                 background-color: white;
+                color: #000000;
                 border-color: #2196F3;
                 border-bottom: 2px solid white;
             }
             QTabBar::tab:hover:!selected {
                 background-color: #e0e0e0;
+                color: #000000;
             }
         """)
         
@@ -109,6 +112,7 @@ class TabbedConfigWidget(QWidget):
                 border: 1px solid #cccccc;
                 border-radius: 5px;
                 background-color: #f8f9fa;
+                color: #000000;
                 padding: 10px;
             }
         """)
@@ -117,12 +121,14 @@ class TabbedConfigWidget(QWidget):
         # Overall validation status
         self.overall_validation = QLabel()
         self.overall_validation.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.overall_validation.setStyleSheet("font-weight: bold; font-size: 14px; margin-bottom: 10px;")
+        self.overall_validation.setStyleSheet("font-weight: bold; font-size: 14px; margin-bottom: 10px; background-color: transparent;")
         nav_layout.addWidget(self.overall_validation)
         
         # Progress indicator
         progress_layout = QHBoxLayout()
-        progress_layout.addWidget(QLabel("Progress:"))
+        progress_label = QLabel("Progress:")
+        progress_label.setStyleSheet("color: #000000; background-color: transparent;")
+        progress_layout.addWidget(progress_label)
         
         self.progress_bar = QProgressBar()
         self.progress_bar.setRange(0, 3)
@@ -152,15 +158,18 @@ class TabbedConfigWidget(QWidget):
         self.back_button.setStyleSheet("""
             QPushButton {
                 padding: 8px 16px;
-                border: 1px solid #ccc;
+                border: 1px solid #cccccc;
                 border-radius: 4px;
                 background-color: #f0f0f0;
+                color: #000000;
             }
             QPushButton:hover:enabled {
                 background-color: #e0e0e0;
+                color: #000000;
             }
             QPushButton:disabled {
-                color: #999;
+                color: #999999;
+                background-color: #f0f0f0;
             }
         """)
         
@@ -179,9 +188,9 @@ class TabbedConfigWidget(QWidget):
                 background-color: #1976D2;
             }
             QPushButton:disabled {
-                background-color: #ccc;
-                border-color: #ccc;
-                color: #999;
+                background-color: #cccccc;
+                border-color: #cccccc;
+                color: #999999;
             }
         """)
         
@@ -202,9 +211,9 @@ class TabbedConfigWidget(QWidget):
                 background-color: #45a049;
             }
             QPushButton:disabled {
-                background-color: #ccc;
-                border-color: #ccc;
-                color: #999;
+                background-color: #cccccc;
+                border-color: #cccccc;
+                color: #999999;
             }
         """)
         
@@ -306,7 +315,7 @@ class TabbedConfigWidget(QWidget):
         # Update overall validation display
         if valid_count == 3:
             self.overall_validation.setText("✅ All configurations valid - Ready to simulate!")
-            self.overall_validation.setStyleSheet("color: green; font-weight: bold; font-size: 14px;")
+            self.overall_validation.setStyleSheet("color: green; font-weight: bold; font-size: 14px; background-color: transparent;")
             
             # Run complete cross-validation
             if self._validate_complete_configuration():
@@ -314,7 +323,7 @@ class TabbedConfigWidget(QWidget):
             else:
                 self.run_button.setEnabled(False)
                 self.overall_validation.setText("⚠️ Configuration compatibility issues detected")
-                self.overall_validation.setStyleSheet("color: orange; font-weight: bold; font-size: 14px;")
+                self.overall_validation.setStyleSheet("color: orange; font-weight: bold; font-size: 14px; background-color: transparent;")
         else:
             invalid_tabs = []
             if not sensor_valid:
@@ -325,7 +334,7 @@ class TabbedConfigWidget(QWidget):
                 invalid_tabs.append("Scenario")
                 
             self.overall_validation.setText(f"⚠️ Incomplete: {', '.join(invalid_tabs)}")
-            self.overall_validation.setStyleSheet("color: orange; font-weight: bold; font-size: 14px;")
+            self.overall_validation.setStyleSheet("color: orange; font-weight: bold; font-size: 14px; background-color: transparent;")
             self.run_button.setEnabled(False)
             
     def _validate_complete_configuration(self):
